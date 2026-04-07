@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 interface Todo {
   id: number
@@ -37,10 +37,15 @@ function toggleTodo(todo: Todo) {
 function removeTodo(id: number) {
   todos.value = todos.value.filter(t => t.id !== id)
 }
+
+onMounted(async () => {
+  const { gsap } = await import('gsap')
+  gsap.from('.todo-app', { y: 30, opacity: 0, duration: 0.6, ease: 'power2.out' })
+})
 </script>
 
 <template>
-  <div class="bg-slate-800 rounded-xl p-6 max-w-lg mx-auto">
+  <div class="todo-app bg-slate-800 rounded-xl p-6 max-w-lg mx-auto">
     <!-- Header -->
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-xl font-semibold m-0">📝 Lista de Tarefas</h3>

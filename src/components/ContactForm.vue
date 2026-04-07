@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 interface FormData {
   name: string
@@ -23,20 +23,13 @@ const errors = ref<Partial<Record<keyof FormData, string>>>({})
 function validate(): boolean {
   errors.value = {}
 
-  if (!form.value.name.trim()) {
-    errors.value.name = 'Nome é obrigatório'
-  }
-
+  if (!form.value.name.trim()) errors.value.name = 'Nome é obrigatório'
   if (!form.value.email.trim()) {
     errors.value.email = 'E-mail é obrigatório'
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
     errors.value.email = 'E-mail inválido'
   }
-
-  if (!form.value.subject.trim()) {
-    errors.value.subject = 'Assunto é obrigatório'
-  }
-
+  if (!form.value.subject.trim()) errors.value.subject = 'Assunto é obrigatório'
   if (!form.value.message.trim()) {
     errors.value.message = 'Mensagem é obrigatória'
   } else if (form.value.message.trim().length < 10) {
@@ -46,12 +39,22 @@ function validate(): boolean {
   return Object.keys(errors.value).length === 0
 }
 
+// Shake animation when errors appear
+watch(errors, async (newErrors) => {
+  const { gsap } = await import('gsap')
+  Object.keys(newErrors).forEach((field) => {
+    const el = document.getElementById(`cf-${field}`)
+    if (el) {
+      gsap.fromTo(el, { x: [-6, 6, -4, 4, -2, 0] }, { duration: 0.4, ease: 'power2.out' })
+    }
+  })
+}, { deep: true })
+
 function handleSubmit() {
   if (!validate()) return
 
   isSubmitting.value = true
 
-  // Simula um delay de envio
   setTimeout(() => {
     const data = form.value
     alert(
@@ -61,15 +64,10 @@ function handleSubmit() {
       `📋 Assunto: ${data.subject}\n` +
       `💬 Mensagem: ${data.message}`
     )
-
-    // Reset
     form.value = { name: '', email: '', subject: '', message: '' }
     successMsg.value = 'Mensagem enviada com sucesso!'
     isSubmitting.value = false
-
-    setTimeout(() => {
-      successMsg.value = ''
-    }, 4000)
+    setTimeout(() => { successMsg.value = '' }, 4000)
   }, 800)
 }
 
@@ -82,11 +80,10 @@ function getErrorClass(field: keyof FormData): string {
 
 <template>
   <form
-    class="bg-slate-800 rounded-xl p-6 max-w-lg mx-auto space-y-5"
+    class="contact-form bg-slate-800 rounded-xl p-6 max-w-lg mx-auto space-y-5"
     @submit.prevent="handleSubmit"
     novalidate
   >
-    <!-- Mensagem de sucesso -->
     <Transition name="fade">
       <div
         v-if="successMsg"
@@ -96,7 +93,6 @@ function getErrorClass(field: keyof FormData): string {
       </div>
     </Transition>
 
-    <!-- Nome -->
     <div>
       <label for="cf-name" class="block text-sm font-medium text-slate-300 mb-1.5">
         Nome <span class="text-red-400">*</span>
@@ -106,15 +102,11 @@ function getErrorClass(field: keyof FormData): string {
         v-model="form.name"
         type="text"
         placeholder="Seu nome"
-        :class="[
-          'w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border',
-          getErrorClass('name'),
-        ]"
+        :class="['w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border', getErrorClass('name')]"
       />
       <p v-if="errors.name" class="text-red-400 text-xs mt-1">{{ errors.name }}</p>
     </div>
 
-    <!-- Email -->
     <div>
       <label for="cf-email" class="block text-sm font-medium text-slate-300 mb-1.5">
         E-mail <span class="text-red-400">*</span>
@@ -124,15 +116,11 @@ function getErrorClass(field: keyof FormData): string {
         v-model="form.email"
         type="email"
         placeholder="seu@email.com"
-        :class="[
-          'w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border',
-          getErrorClass('email'),
-        ]"
+        :class="['w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border', getErrorClass('email')]"
       />
       <p v-if="errors.email" class="text-red-400 text-xs mt-1">{{ errors.email }}</p>
     </div>
 
-    <!-- Assunto -->
     <div>
       <label for="cf-subject" class="block text-sm font-medium text-slate-300 mb-1.5">
         Assunto <span class="text-red-400">*</span>
@@ -142,15 +130,11 @@ function getErrorClass(field: keyof FormData): string {
         v-model="form.subject"
         type="text"
         placeholder="Sobre o que deseja falar?"
-        :class="[
-          'w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border',
-          getErrorClass('subject'),
-        ]"
+        :class="['w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border', getErrorClass('subject')]"
       />
       <p v-if="errors.subject" class="text-red-400 text-xs mt-1">{{ errors.subject }}</p>
     </div>
 
-    <!-- Mensagem -->
     <div>
       <label for="cf-message" class="block text-sm font-medium text-slate-300 mb-1.5">
         Mensagem <span class="text-red-400">*</span>
@@ -160,15 +144,11 @@ function getErrorClass(field: keyof FormData): string {
         v-model="form.message"
         rows="4"
         placeholder="Escreva sua mensagem..."
-        :class="[
-          'w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border resize-none',
-          getErrorClass('message'),
-        ]"
+        :class="['w-full px-4 py-2.5 rounded-lg bg-slate-900 text-slate-200 text-sm outline-none transition-all duration-200 placeholder-slate-600 border resize-none', getErrorClass('message')]"
       ></textarea>
       <p v-if="errors.message" class="text-red-400 text-xs mt-1">{{ errors.message }}</p>
     </div>
 
-    <!-- Submit -->
     <button
       type="submit"
       :disabled="isSubmitting"
@@ -192,7 +172,6 @@ function getErrorClass(field: keyof FormData): string {
 </template>
 
 <style scoped>
-/* Fade transition para mensagem de sucesso */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
