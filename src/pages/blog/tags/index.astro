@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts.filter((post) => !post.data.draft);
+
+// Criar mapa de tags com contagem
+const tagCounts = new Map<string, number>();
+posts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  });
+});
+
+const allTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+
+const resolve = (path: string) => {
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return cleanBase + path;
+};
+---
+
+<BaseLayout>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Header -->
+    <header class="mb-12">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+        <a href={resolve('/')} class="hover:text-astro transition-colors">Home</a>
+        <span>/</span>
+        <a href={resolve('/blog')} class="hover:text-astro transition-colors">Blog</a>
+        <span>/</span>
+        <span class="text-astro">Tags</span>
+      </nav>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 mb-3">
+        🏷️ Todas as Tags
+      </h1>
+      <p class="text-slate-400 text-lg">
+        {allTags.length} {allTags.length === 1 ? 'tag encontrada' : 'tags encontradas'}
+      </p>
+    </header>
+
+    <!-- Tags Grid -->
+    <section>
+      {allTags.length > 0 ? (
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {allTags.map(([tag, count]) => (
+            <a
+              href={resolve(`/blog/tags/${tag}`)}
+              class="group block bg-slate-800 border border-slate-700 rounded-xl p-6 text-center transition-all duration-200 hover:-translate-y-1 hover:border-astro hover:shadow-lg hover:shadow-astro/10"
+            >
+              <span class="text-3xl block mb-3">🏷️</span>
+              <span class="text-lg font-semibold text-slate-100 group-hover:text-astro transition-colors block mb-2">
+                {tag}
+              </span>
+              <span class="inline-block bg-astro/10 text-astro text-sm px-3 py-1 rounded-full font-medium">
+                {count} {count === 1 ? 'post' : 'posts'}
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-slate-800 rounded-xl">
+          <p class="text-slate-400 text-lg">
+            Nenhuma tag encontrada.
+          </p>
+        </div>
+      )}
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-12 pt-8 border-t border-slate-800 text-center">
+      <a
+        href={resolve('/blog')}
+        class="text-astro hover:text-astro-light transition-colors font-medium"
+      >
+        ← Ver todos os posts
+      </a>
+    </footer>
+  </div>
+</BaseLayout>
