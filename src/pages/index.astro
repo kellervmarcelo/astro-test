@@ -16,15 +16,16 @@ const techs = [
 ---
 
 <BaseLayout>
-  <header class="text-center px-4 pt-12 pb-4">
-    <h1 class="text-5xl font-extrabold bg-gradient-to-br from-astro to-astro-light bg-clip-text text-transparent mb-2">
+  <header class="text-center px-4 pt-16 pb-8">
+    <h1 class="hero-title text-5xl font-extrabold bg-gradient-to-br from-astro to-astro-light bg-clip-text text-transparent mb-2">
       🚀 Astro Framework
     </h1>
-    <p class="text-slate-400 text-xl">Meu primeiro projeto com Astro</p>
+    <p class="hero-subtitle text-slate-400 text-xl">Meu primeiro projeto com Astro</p>
+    <div class="scroll-arrow mt-8 text-slate-500 text-2xl">↓</div>
   </header>
 
   <main class="max-w-3xl mx-auto px-4 py-8">
-    <section class="mb-12">
+    <section class="mb-12 anim-section">
       <h2 class="text-2xl font-semibold mb-4 text-astro">Por que Astro?</h2>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
         {techs.map((tech) => (
@@ -33,7 +34,7 @@ const techs = [
       </div>
     </section>
 
-    <section class="text-center p-8 bg-slate-800 rounded-xl mb-8">
+    <section class="text-center p-8 bg-slate-800 rounded-xl mb-8 anim-section">
       <h2 class="text-2xl font-semibold mb-4 text-astro">🏝️ Islands Architecture</h2>
       <p class="text-slate-400 mb-6">
         Este contador é uma "ilha" interativa — o único JS na página!
@@ -41,7 +42,7 @@ const techs = [
       <Counter />
     </section>
 
-    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8 anim-section">
       <h2 class="text-xl font-semibold mb-2">🔧 Astro + Vue Juntos</h2>
       <p class="text-slate-400 mb-4">
         Este componente <strong>Vue 3</strong> foi renderizado como uma ilha.
@@ -50,7 +51,7 @@ const techs = [
       <TodoList client:visible />
     </section>
 
-    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8 anim-section">
       <h2 class="text-xl font-semibold mb-2">📬 Formulário de Contato</h2>
       <p class="text-slate-400 mb-4">
         Formulário Vue com validação reativa e <code class="bg-slate-700 px-1.5 py-0.5 rounded text-sm">alert()</code> no submit.
@@ -58,9 +59,9 @@ const techs = [
       <ContactForm client:visible />
     </section>
 
-    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8 anim-section">
       <h2 class="text-xl font-semibold mb-2">📊 Astro vs Outros</h2>
-      <table class="w-full border-collapse mt-4 text-sm">
+      <table class="comparison-table w-full border-collapse mt-4 text-sm">
         <thead>
           <tr class="border-b-2 border-astro">
             <th class="p-2 text-left">Framework</th>
@@ -99,7 +100,59 @@ const techs = [
     </section>
   </main>
 
-  <footer class="text-center px-4 py-8 text-slate-500 text-sm">
+  <footer class="site-footer text-center px-4 py-8 text-slate-500 text-sm">
     <p>Criado com ❤️ usando Astro — O framework que envia zero JavaScript</p>
   </footer>
 </BaseLayout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (prefersReducedMotion.matches) {
+    // Desabilita animações para acessibilidade
+  } else {
+    // Hero
+    gsap.from('.hero-title', { y: 60, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
+    gsap.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.5 });
+    gsap.to('.scroll-arrow', { y: 10, repeat: -1, yoyo: true, duration: 0.8, ease: 'sine.inOut' });
+
+    // Sections
+    gsap.utils.toArray('.anim-section').forEach((section) => {
+      gsap.from(section, {
+        y: 50, opacity: 0, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 85%', once: true },
+      });
+    });
+
+    // Table rows
+    const rows = document.querySelectorAll('.comparison-table tbody tr');
+    if (rows.length > 0) {
+      ScrollTrigger.create({
+        trigger: '.comparison-table', start: 'top 85%', once: true,
+        onEnter: () => {
+          gsap.from(rows, { x: -30, opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' });
+        },
+      });
+    }
+
+    // Footer
+    gsap.from('.site-footer', {
+      opacity: 0, duration: 0.6,
+      scrollTrigger: { trigger: '.site-footer', start: 'top 95%', once: true },
+    });
+  }
+
+  // Counter pulse
+  window.counterPulse = function () {
+    const display = document.querySelector('.counter-value');
+    if (!display) return;
+    gsap.fromTo(display,
+      { scale: 1.3, color: '#FF8C42' },
+      { scale: 1, color: '#FF5D01', duration: 0.4, ease: 'power2.out' },
+    );
+  };
+</script>

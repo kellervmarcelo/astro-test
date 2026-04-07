@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 interface FormData {
   name: string
@@ -48,30 +48,27 @@ function validate(): boolean {
 
 function handleSubmit() {
   if (!validate()) return
-
   isSubmitting.value = true
-
-  // Simula um delay de envio
   setTimeout(() => {
     const data = form.value
     alert(
       `✅ Mensagem enviada com sucesso!\n\n` +
-      `👤 Nome: ${data.name}\n` +
-      `📧 E-mail: ${data.email}\n` +
-      `📋 Assunto: ${data.subject}\n` +
-      `💬 Mensagem: ${data.message}`
+      `👤 Nome: ${data.name}\n📧 E-mail: ${data.email}\n📋 Assunto: ${data.subject}\n💬 Mensagem: ${data.message}`
     )
-
-    // Reset
     form.value = { name: '', email: '', subject: '', message: '' }
     successMsg.value = 'Mensagem enviada com sucesso!'
     isSubmitting.value = false
-
-    setTimeout(() => {
-      successMsg.value = ''
-    }, 4000)
+    setTimeout(() => { successMsg.value = '' }, 4000)
   }, 800)
 }
+
+watch(errors, async (newErrors) => {
+  const { gsap } = await import('gsap')
+  Object.keys(newErrors).forEach((field) => {
+    const el = document.getElementById(`cf-${field}`)
+    if (el) gsap.fromTo(el, { x: [-6, 6, -4, 4, -2, 0] }, { duration: 0.4, ease: 'power2.out' })
+  })
+}, { deep: true })
 
 function getErrorClass(field: keyof FormData): string {
   return errors.value[field]
