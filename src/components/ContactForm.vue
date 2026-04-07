@@ -52,17 +52,12 @@ watch(errors, async (newErrors) => {
 
 function handleSubmit() {
   if (!validate()) return
-
   isSubmitting.value = true
-
   setTimeout(() => {
     const data = form.value
     alert(
       `✅ Mensagem enviada com sucesso!\n\n` +
-      `👤 Nome: ${data.name}\n` +
-      `📧 E-mail: ${data.email}\n` +
-      `📋 Assunto: ${data.subject}\n` +
-      `💬 Mensagem: ${data.message}`
+      `👤 Nome: ${data.name}\n📧 E-mail: ${data.email}\n📋 Assunto: ${data.subject}\n💬 Mensagem: ${data.message}`
     )
     form.value = { name: '', email: '', subject: '', message: '' }
     successMsg.value = 'Mensagem enviada com sucesso!'

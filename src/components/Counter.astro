@@ -1,6 +1,5 @@
 ---
 // Componente interativo — "ilha" com script inline
-// Apenas ESTE componente terá JS no navegador. O resto da página é HTML puro!
 ---
 
 <div class="flex flex-col items-center gap-6" data-counter>
@@ -16,7 +15,6 @@
   document.querySelectorAll('[data-counter]').forEach((el) => {
     let count = 0;
     const display = el.querySelector('.counter-value');
-
     el.querySelectorAll('[data-action]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const action = btn.dataset.action;

@@ -1,12 +1,10 @@
 ---
-// Card estático — zero JavaScript enviado ao navegador
 const name = Astro.props.name ?? 'Astro';
 const desc = Astro.props.desc ?? '';
 const icon = Astro.props.icon ?? '⭐';
-const className = Astro.props.className ?? '';
 ---
 
-<div class={`bg-slate-800 border border-slate-700 rounded-xl p-6 transition-all duration-200 hover:-translate-y-1 hover:border-astro opacity-0 anim-hidden ${className}`}>
+<div class="bg-slate-800 border border-slate-700 rounded-xl p-6 transition-all duration-200 hover:-translate-y-1 hover:border-astro">
   <span class="text-3xl block mb-2">{icon}</span>
   <h3 class="text-lg text-slate-100 mb-1">{name}</h3>
   <p class="text-sm text-slate-400">{desc}</p>
