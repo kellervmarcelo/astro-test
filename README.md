@@ -1,35 +1,40 @@
-# 🚀 Astro Test
+# 📝 Kellerv Marcelo — Blog Pessoal
 
-Meu primeiro projeto com **Astro** — demonstrando Islands Architecture, integração com **Vue 3** e estilização com **Tailwind CSS v4**.
+Blog pessoal construído com **Astro 5**, **Vue 3** e **Tailwind CSS v4**. Um espaço para compartilhar aprendizados, tutoriais e insights sobre desenvolvimento web moderno.
 
-> [Live Demo](https://astro-test.vercel.app) *(adicione a URL do deploy)*
+> **Live Demo:** https://kellervmarcelo.github.io/astro-test/
 
 ## 📋 Sobre o Projeto
 
-Este projeto serve como playground para aprender e demonstrar os principais conceitos do Astro:
+Este projeto começou como um playground para aprender Astro e evoluiu para um **blog pessoal completo**. Ele demonstra os principais recursos do Astro aplicados a um projeto real:
 
-- **Zero JavaScript por padrão** — a página é renderizada como HTML estático puro
-- **Islands Architecture** — componentes interativos são "ilhas" isoladas que hidratam sob demanda
-- **Multi-Framework** — componentes Vue 3 coexistem com componentes Astro puros na mesma página
-- **Performance máxima** — Lighthouse 100/100 com bundle mínimo
+- **Content Collections** — gerenciamento de posts com type-safety e Markdown
+- **Zero JavaScript por padrão** — páginas estáticas ultra-rápidas
+- **Islands Architecture** — interatividade Vue quando necessário
+- **Rotas dinâmicas** — geração automática de páginas para cada post
+- **Deploy automático** — CI/CD para GitHub Pages via GitHub Actions
 
 ### O que você vai encontrar
 
 | Seção | Componente | Tecnologia |
 |---|---|---|
-| Cards de features | `TechCard.astro` | Astro estático (zero JS) |
-| Contador interativo | `Counter.astro` | `<script is:inline>` (vanilla JS) |
-| Lista de tarefas | `TodoList.vue` | Vue 3 Composition API (`client:visible`) |
-| Tabela comparativa | `index.astro` | HTML estático + Tailwind |
+| Landing page | `index.astro` | Hero + posts recentes + sobre |
+| Lista de blog | `blog/index.astro` | Grid de posts com filtro por tags |
+| Post individual | `blog/[slug].astro` | Renderização de Markdown + navegação |
+| Card de post | `BlogCard.astro` | Preview com data, descrição e tags |
+| Lista de tags | `TagList.astro` | Filtro interativo por categoria |
+| Layout de post | `PostLayout.astro` | Template consistente para leitura |
 
 ## 🛠 Tecnologias
 
 | Tecnologia | Versão | Uso |
 |---|---|---|
 | [Astro](https://astro.build/) | 5.18 | Framework principal |
-| [Vue](https://vuejs.org/) | 3.5 | Componente TodoList (ilha reativa) |
-| [Tailwind CSS](https://tailwindcss.com/) | 4.2 | Estilização completa |
+| [Vue](https://vuejs.org/) | 3.5 | Componentes reativos (futuro) |
+| [Tailwind CSS](https://tailwindcss.com/) | 4.2 | Estilização via `@tailwindcss/vite` |
+| [GSAP](https://gsap.com/) | 3.14 | Animações de scroll |
 | [TypeScript](https://www.typescriptlang.org/) | 5.0 | Type-checking strict |
+| [Markdown](https://daringfireball.net/projects/markdown/) | — | Escrita de posts |
 
 ## 📁 Estrutura do Projeto
 
@@ -37,83 +42,94 @@ Este projeto serve como playground para aprender e demonstrar os principais conc
 astro-test/
 ├── src/
 │   ├── components/
-│   │   ├── Counter.astro       # Ilha interativa (vanilla JS)
-│   │   ├── TechCard.astro      # Card estático (zero JS)
-│   │   └── TodoList.vue        # Lista de tarefas (Vue 3)
+│   │   ├── BlogCard.astro       # Card de preview de posts
+│   │   ├── PostLayout.astro     # Layout para posts individuais
+│   │   ├── TagList.astro        # Lista de tags com filtro
+│   │   ├── Counter.astro        # Ilha interativa (vanilla JS)
+│   │   ├── TechCard.astro       # Card estático (zero JS)
+│   │   ├── TodoList.vue         # Lista de tarefas (Vue 3)
+│   │   └── ContactForm.vue      # Formulário com validação (Vue 3)
+│   ├── content/
+│   │   └── blog/
+│   │       ├── config.ts        # Schema type-safe para posts
+│   │       ├── primeiro-post.md
+│   │       ├── segundo-post.md
+│   │       └── terceiro-post.md
 │   ├── layouts/
-│   │   └── BaseLayout.astro    # Layout base com HTML semântico
+│   │   └── BaseLayout.astro     # Layout base com navbar
 │   ├── pages/
-│   │   └── index.astro         # Página principal
+│   │   ├── index.astro          # Landing page do blog
+│   │   └── blog/
+│   │       ├── index.astro      # Lista todos os posts
+│   │       └── [...slug].astro  # Template dinâmico de posts
 │   └── styles/
-│       └── global.css          # Tailwind + tema custom (@theme)
+│       └── global.css           # Tailwind + tema custom
 ├── public/
 │   ├── favicon.svg
 │   └── robots.txt
-├── astro.config.mjs            # Configuração (Vue + Tailwind via Vite)
-├── tsconfig.json               # TypeScript strict mode
+├── .github/
+│   └── workflows/
+│       ├── ci.yml               # CI: type-check + build
+│       └── deploy.yml           # CD: deploy ao GitHub Pages
+├── astro.config.mjs             # Vue + Tailwind + base path
+├── tsconfig.json                # TypeScript strict mode
 └── package.json
 ```
 
 ## 🚀 Comandos
 
-Todos os comandos são executados a partir da raiz do projeto:
-
 ```bash
 # Instalar dependências
 npm install
 
-# Iniciar servidor de desenvolvimento (http://localhost:4321)
+# Servidor de desenvolvimento (http://localhost:4321/astro-test/)
 npm run dev
 
 # Build de produção (output em dist/)
 npm run build
 
-# Preview local do build de produção
+# Preview local do build
 npm run preview
 
-# Verificar tipos TypeScript
+# Type-check TypeScript
 npx astro check
 ```
 
-## 🏝️ Islands Architecture em Ação
+## ✍️ Criando Novos Posts
 
-O projeto demonstra três níveis de interatividade:
+Posts são escritos em **Markdown** e ficam em `src/content/blog/`:
 
-### 1. Estático (zero JS)
-```astro
-<!-- TechCard.astro — HTML puro, sem JavaScript -->
-<div class="bg-slate-800 rounded-xl p-6">
-  <span class="text-3xl">{icon}</span>
-  <h3>{name}</h3>
-</div>
+```markdown
+---
+title: "Título do Post"
+description: "Uma breve descrição do post"
+date: 2026-04-07
+tags: ["astro", "web-dev", "tutorial"]
+---
+
+# Conteúdo do Post
+
+Escreva seu post aqui usando Markdown...
 ```
 
-### 2. Script inline (sempre carregado)
-```astro
-<!-- Counter.astro — módulo JS na página -->
-<script is:inline>
-  document.querySelectorAll('[data-counter]').forEach(...)
-</script>
-```
+O Astro gera automaticamente a página em `/blog/seu-post` e adiciona o post à lista em `/blog`.
 
-### 3. Framework hydratable (sob demanda)
-```astro
-<!-- index.astro — Vue só carrega quando visível -->
-<TodoList client:visible />
-```
+### Schema de Posts
 
-### Diretivas de hidratação disponíveis
+Cada post deve seguir o schema definido em `src/content/config.ts`:
 
-| Diretiva | Quando hidrata |
-|---|---|
-| `client:load` | Imediatamente no carregamento |
-| `client:idle` | Após `window.load` |
-| `client:visible` | Quando entra no viewport |
-| `client:media` | Quando a media query corresponde |
+| Campo | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `title` | string | ✅ | Título do post |
+| `description` | string | ✅ | Descrição breve |
+| `date` | date | ✅ | Data de publicação |
+| `tags` | string[] | ❌ | Tags/categorias |
+| `image` | string | ❌ | Imagem de capa |
+| `draft` | boolean | ❌ | Rascunho (padrão: false) |
 
-## 🎨 Tailwind CSS v4
+## 🎨 Estilização
 
-O projeto usa Tailwind v4 com configuração via CSS-first:
+O projeto usa **Tailwind CSS v4** com tema customizado:
 
 ```css
 /* src/styles/global.css */
@@ -125,20 +141,51 @@ O projeto usa Tailwind v4 com configuração via CSS-first:
 }
 ```
 
-Cores customizadas disponíveis: `text-astro`, `bg-astro/10`, `border-astro`, `from-astro to-astro-light`
+Cores disponíveis: `text-astro`, `bg-astro/10`, `border-astro`, `from-astro to-astro-light`
 
-## 📊 Comparativo de Frameworks
+## 🏗 Arquitetura
 
-| Framework | Bundle JS | Lighthouse | Melhor Para |
-|---|---|---|---|
-| ⚡ **Astro** | **0 KB** | **100** | Conteúdo, marketing, blogs |
-| ⚛️ Next.js | 95-250 KB | 94 | Apps complexos, React |
-| 💚 SvelteKit | ~180 KB | 98 | Performance SPA |
-| 💚 Nuxt 3 | ~180 KB | 97 | Full-stack Vue |
+### Content Collections
+
+Posts são gerenciados pelo sistema de Content Collections do Astro, que garante:
+- ✅ Validação automática de frontmatter
+- ✅ Autocomplete no editor
+- ✅ Erros de build se algo estiver errado
+- ✅ Query eficiente com `getCollection()`
+
+### Rotas Dinâmicas
+
+O arquivo `blog/[...slug].astro` usa `getStaticPaths()` para gerar uma página estática para cada post:
+
+```typescript
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}
+```
+
+### Navegação entre Posts
+
+Cada post inclui links para o post anterior e próximo, ordenados por data.
+
+## 📊 Performance
+
+| Métrica | Valor |
+|---|---|
+| Bundle JS (home) | ~15 KB gzip |
+| Lighthouse | 100 |
+| FCP | < 1s |
+| Posts estáticos | Zero JS |
 
 ## 🧑‍💻 Autor
 
 **Marcelo Keller** — [@kellervmarcelo](https://github.com/kellervmarcelo)
+
+- GitHub: https://github.com/kellervmarcelo
+- Blog: https://kellervmarcelo.github.io/astro-test/
 
 ## 📄 Licença
 
