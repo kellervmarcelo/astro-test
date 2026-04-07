@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme {
+  --color-astro: #FF5D01;
+  --color-astro-light: #FF8C42;
+}

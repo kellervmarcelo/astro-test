@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Counter from '../components/Counter.astro';
+import TechCard from '../components/TechCard.astro';
+import TodoList from '../components/TodoList.vue';
+
+const techs = [
+  { name: 'Zero JS por padrão', desc: 'HTML puro enviado ao navegador', icon: '⚡' },
+  { name: 'Islands Architecture', desc: 'Interatividade sob demanda', icon: '🏝️' },
+  { name: 'Multi-Framework', desc: 'React, Vue, Svelte juntos', icon: '🔧' },
+  { name: 'Markdown nativo', desc: 'Content Collections type-safe', icon: '📝' },
+  { name: 'SSG + SSR', desc: 'Estático ou server-side', icon: '🚀' },
+  { name: 'Vite integrado', desc: 'HMR rápido e otimizado', icon: '✨' },
+];
+---
+
+<BaseLayout>
+  <header class="text-center px-4 pt-12 pb-4">
+    <h1 class="text-5xl font-extrabold bg-gradient-to-br from-astro to-astro-light bg-clip-text text-transparent mb-2">
+      🚀 Astro Framework
+    </h1>
+    <p class="text-slate-400 text-xl">Meu primeiro projeto com Astro</p>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 text-astro">Por que Astro?</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+        {techs.map((tech) => (
+          <TechCard name={tech.name} desc={tech.desc} icon={tech.icon} />
+        ))}
+      </div>
+    </section>
+
+    <section class="text-center p-8 bg-slate-800 rounded-xl mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-astro">🏝️ Islands Architecture</h2>
+      <p class="text-slate-400 mb-6">
+        Este contador é uma "ilha" interativa — o único JS na página!
+      </p>
+      <Counter />
+    </section>
+
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+      <h2 class="text-xl font-semibold mb-2">🔧 Astro + Vue Juntos</h2>
+      <p class="text-slate-400 mb-4">
+        Este componente <strong>Vue 3</strong> foi renderizado como uma ilha.
+        Scroll para ver a hidratação com <code class="bg-slate-700 px-1.5 py-0.5 rounded text-sm">client:visible</code>:
+      </p>
+      <TodoList client:visible />
+    </section>
+
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+      <h2 class="text-xl font-semibold mb-2">📊 Astro vs Outros</h2>
+      <table class="w-full border-collapse mt-4 text-sm">
+        <thead>
+          <tr class="border-b-2 border-astro">
+            <th class="p-2 text-left">Framework</th>
+            <th class="p-2 text-center">Bundle JS</th>
+            <th class="p-2 text-center">Lighthouse</th>
+            <th class="p-2">Melhor para</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-astro/10">
+            <td class="p-2">⚡ <strong>Astro</strong></td>
+            <td class="p-2 text-center"><strong>0 KB</strong></td>
+            <td class="p-2 text-center"><strong>100</strong></td>
+            <td class="p-2">Conteúdo/Marketing</td>
+          </tr>
+          <tr class="border-b border-slate-700">
+            <td class="p-2">⚛️ Next.js</td>
+            <td class="p-2 text-center">95-250 KB</td>
+            <td class="p-2 text-center">94</td>
+            <td class="p-2">Apps complexos</td>
+          </tr>
+          <tr class="border-b border-slate-700">
+            <td class="p-2">💚 SvelteKit</td>
+            <td class="p-2 text-center">~180 KB</td>
+            <td class="p-2 text-center">98</td>
+            <td class="p-2">Performance SPA</td>
+          </tr>
+          <tr>
+            <td class="p-2">💚 Nuxt</td>
+            <td class="p-2 text-center">~180 KB</td>
+            <td class="p-2 text-center">97</td>
+            <td class="p-2">Full-stack Vue</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="text-center px-4 py-8 text-slate-500 text-sm">
+    <p>Criado com ❤️ usando Astro — O framework que envia zero JavaScript</p>
+  </footer>
+</BaseLayout>
