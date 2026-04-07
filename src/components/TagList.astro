@@ -1,0 +1,48 @@
+---
+interface Props {
+  tags: string[];
+  currentTag?: string;
+  baseUrl?: string;
+}
+
+const { tags, currentTag, baseUrl = '/blog' } = Astro.props;
+
+const resolve = (path: string) => {
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return cleanBase + path;
+};
+---
+
+<div class="flex flex-wrap gap-2">
+  <a
+    href={resolve(baseUrl)}
+    class:list={[
+      'tag-link text-sm px-3 py-1 rounded-full transition-colors',
+      !currentTag
+        ? 'bg-astro text-white'
+        : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-astro',
+    ]}
+  >
+    Todos
+  </a>
+  {tags.map((tag) => (
+    <a
+      href={resolve(`${baseUrl}?tag=${tag}`)}
+      class:list={[
+        'tag-link text-sm px-3 py-1 rounded-full transition-colors',
+        currentTag === tag
+          ? 'bg-astro text-white'
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-astro',
+      ]}
+    >
+      {tag}
+    </a>
+  ))}
+</div>
+
+<style>
+.tag-link {
+  text-decoration: none;
+}
+</style>

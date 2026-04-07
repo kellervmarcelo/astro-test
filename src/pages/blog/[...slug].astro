@@ -1,0 +1,70 @@
+---
+import PostLayout from '../../components/PostLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((post) => !post.data.draft)
+    .map((post) => ({
+      params: { slug: post.slug },
+      props: post,
+    }));
+}
+
+const post = Astro.props as CollectionEntry<'blog'>;
+const { Content } = await post.render();
+
+const allPosts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
+const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+
+const resolve = (path: string) => {
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return cleanBase + path;
+};
+---
+
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  tags={post.data.tags}
+>
+  <Content />
+
+  <!-- Navegação entre posts -->
+  {(prevPost || nextPost) && (
+    <nav class="mt-12 pt-8 border-t border-slate-700">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {prevPost && (
+          <a
+            href={resolve(`/blog/${prevPost.slug}`)}
+            class="block bg-slate-800 border border-slate-700 rounded-xl p-4 hover:border-astro transition-colors group"
+          >
+            <span class="text-xs text-slate-500 uppercase tracking-wide">Post anterior</span>
+            <span class="block text-slate-200 font-medium mt-1 group-hover:text-astro transition-colors">
+              ← {prevPost.data.title}
+            </span>
+          </a>
+        )}
+        {nextPost && (
+          <a
+            href={resolve(`/blog/${nextPost.slug}`)}
+            class="block bg-slate-800 border border-slate-700 rounded-xl p-4 hover:border-astro transition-colors group md:text-right"
+          >
+            <span class="text-xs text-slate-500 uppercase tracking-wide">Próximo post</span>
+            <span class="block text-slate-200 font-medium mt-1 group-hover:text-astro transition-colors">
+              {nextPost.data.title} →
+            </span>
+          </a>
+        )}
+      </div>
+    </nav>
+  )}
+</PostLayout>
