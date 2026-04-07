@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Counter from '../components/Counter.astro';
 import TechCard from '../components/TechCard.astro';
 import TodoList from '../components/TodoList.vue';
+import ContactForm from '../components/ContactForm.vue';
 
 const techs = [
   { name: 'Zero JS por padrão', desc: 'HTML puro enviado ao navegador', icon: '⚡' },
@@ -47,6 +48,14 @@ const techs = [
         Scroll para ver a hidratação com <code class="bg-slate-700 px-1.5 py-0.5 rounded text-sm">client:visible</code>:
       </p>
       <TodoList client:visible />
+    </section>
+
+    <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
+      <h2 class="text-xl font-semibold mb-2">📬 Formulário de Contato</h2>
+      <p class="text-slate-400 mb-4">
+        Formulário Vue com validação reativa e <code class="bg-slate-700 px-1.5 py-0.5 rounded text-sm">alert()</code> no submit.
+      </p>
+      <ContactForm client:visible />
     </section>
 
     <section class="text-center p-6 bg-slate-800 rounded-xl mb-8">
