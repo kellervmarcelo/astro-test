@@ -21,19 +21,20 @@ const resolve = (path: string) => {
 };
 ---
 
-<a
-  href={resolve(`/blog/${slug}`)}
+<article
   class="group block bg-slate-800 border border-slate-700 rounded-xl p-6 transition-all duration-200 hover:-translate-y-1 hover:border-astro hover:shadow-lg hover:shadow-astro/10"
 >
-  <time class="text-sm text-slate-500 mb-2 block">{formattedDate}</time>
-  <h3 class="text-xl font-semibold text-slate-100 mb-2 group-hover:text-astro transition-colors">
-    {data.title}
-  </h3>
-  <p class="text-slate-400 text-sm mb-4 line-clamp-2">
-    {data.description}
-  </p>
+  <a href={resolve(`/blog/${slug}`)} class="block">
+    <time class="text-sm text-slate-500 mb-2 block">{formattedDate}</time>
+    <h3 class="text-xl font-semibold text-slate-100 mb-2 group-hover:text-astro transition-colors">
+      {data.title}
+    </h3>
+    <p class="text-slate-400 text-sm mb-4 line-clamp-2">
+      {data.description}
+    </p>
+  </a>
   {data.tags && data.tags.length > 0 && (
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 mb-4">
       {data.tags.map((tag) => (
         <a
           href={resolve(`/blog/tags/${tag}`)}
@@ -44,7 +45,10 @@ const resolve = (path: string) => {
       ))}
     </div>
   )}
-  <span class="inline-block mt-3 text-astro text-sm font-medium group-hover:translate-x-1 transition-transform">
+  <a
+    href={resolve(`/blog/${slug}`)}
+    class="inline-block text-astro text-sm font-medium hover:text-astro-light transition-colors group-hover:translate-x-1 transform"
+  >
     Ler mais →
-  </span>
-</a>
+  </a>
+</article>
