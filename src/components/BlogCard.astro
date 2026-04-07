@@ -35,9 +35,12 @@ const resolve = (path: string) => {
   {data.tags && data.tags.length > 0 && (
     <div class="flex flex-wrap gap-2">
       {data.tags.map((tag) => (
-        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full">
+        <a
+          href={resolve(`/blog/tags/${tag}`)}
+          class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full hover:bg-slate-600 hover:text-astro transition-colors"
+        >
           {tag}
-        </span>
+        </a>
       ))}
     </div>
   )}

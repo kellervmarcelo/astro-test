@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import TagList from '../../../components/TagList.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const posts = allPosts.filter((post) => !post.data.draft);
+  const allTags = [...new Set(posts.flatMap((post) => post.data.tags ?? []))].sort();
+
+  return allTags.map((tag) => {
+    const tagPosts = posts.filter((post) => post.data.tags?.includes(tag));
+    return {
+      params: { tag },
+      props: { tag, posts: tagPosts, allTags },
+    };
+  });
+}
+
+const { tag, posts, allTags } = Astro.props;
+
+const resolve = (path: string) => {
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return cleanBase + path;
+};
+---
+
+<BaseLayout>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Header -->
+    <header class="mb-8">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+        <a href={resolve('/')} class="hover:text-astro transition-colors">Home</a>
+        <span>/</span>
+        <a href={resolve('/blog')} class="hover:text-astro transition-colors">Blog</a>
+        <span>/</span>
+        <span class="text-slate-300">Tags</span>
+        <span>/</span>
+        <span class="text-astro">{tag}</span>
+      </nav>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 mb-3">
+        Posts com tag "{tag}"
+      </h1>
+      <p class="text-slate-400 text-lg">
+        {posts.length} {posts.length === 1 ? 'post encontrado' : 'posts encontrados'}
+      </p>
+    </header>
+
+    <!-- Tags -->
+    <section class="mb-8">
+      <TagList tags={allTags} currentTag={tag} baseUrl="/blog/tags" />
+    </section>
+
+    <!-- Posts -->
+    <section>
+      {posts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post) => (
+            <BlogCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-slate-800 rounded-xl">
+          <p class="text-slate-400 text-lg">
+            Nenhum post encontrado com a tag "{tag}".
+          </p>
+        </div>
+      )}
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-12 pt-8 border-t border-slate-800 text-center">
+      <a
+        href={resolve('/blog')}
+        class="text-astro hover:text-astro-light transition-colors font-medium"
+      >
+        ← Ver todos os posts
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

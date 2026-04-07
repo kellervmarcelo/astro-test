@@ -9,9 +9,17 @@ const posts = allPosts
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-const allTags = [...new Set(posts.flatMap((post) => post.data.tags ?? []))].sort();
+// Criar mapa de tags com contagem
+const tagCounts = new Map<string, number>();
+posts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  });
+});
 
-// Filtrar por tag se existir na query
+const allTags = [...tagCounts.entries()].map(([tag, count]) => ({ tag, count })).sort((a, b) => a.tag.localeCompare(b.tag));
+
+// Filtrar por tag se existir na query (suporte legado)
 const url = new URL(Astro.request.url);
 const tagFilter = url.searchParams.get('tag');
 const filteredPosts = tagFilter
@@ -35,19 +43,29 @@ const resolve = (path: string) => {
       >
         ← Voltar para a home
       </a>
-      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 mb-3">
-        📝 Blog
-      </h1>
-      <p class="text-slate-400 text-lg">
-        Minhas anotações e aprendizados sobre desenvolvimento web
-      </p>
+      <div class="flex items-end justify-between">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 mb-3">
+            📝 Blog
+          </h1>
+          <p class="text-slate-400 text-lg">
+            Minhas anotações e aprendizados sobre desenvolvimento web
+          </p>
+        </div>
+        <a
+          href={resolve('/blog/tags')}
+          class="hidden md:inline-block text-slate-400 hover:text-astro transition-colors text-sm"
+        >
+          Ver todas as tags →
+        </a>
+      </div>
     </header>
 
     <!-- Tags -->
     {allTags.length > 0 && (
       <section class="mb-8">
         <h2 class="text-sm text-slate-500 mb-3 uppercase tracking-wide">Filtrar por tag</h2>
-        <TagList tags={allTags} currentTag={tagFilter ?? undefined} />
+        <TagList tags={allTags} currentTag={tagFilter ?? undefined} showCount={true} />
       </section>
     )}
 
